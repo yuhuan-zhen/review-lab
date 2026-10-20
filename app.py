@@ -14,8 +14,10 @@ def normalize_user_id(raw: str) -> str:
 
     value = raw.strip().lower()
 
-    # 故意写坏的版本：无条件去前导零（这是本次演示要 CI 拦住的错误）
-    return value.lstrip("0") or "0"
+    if value.isdigit():
+        return value.lstrip("0") or "0"
+
+    return value
 
 
 def is_valid_user_id(raw: str) -> bool:
