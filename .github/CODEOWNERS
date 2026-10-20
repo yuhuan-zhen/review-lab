@@ -1,0 +1,5 @@
+# 默认所有文件归仓库所有者
+*   @yuhuan-zhen
+
+# 高风险路径：CI 与发布相关，永远需要人
+/.github/workflows/   @yuhuan-zhen
