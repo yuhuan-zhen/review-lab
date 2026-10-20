@@ -41,3 +41,26 @@ test_app.py                验证（CI 跑的就是它）
 CLAUDE.md                  项目是什么（每次审查都会读）
 REVIEW.md                  这个仓库里什么算失败（审查器的过滤器）
 ```
+
+## 分支保护的实际配置（2026-10-20 实测）
+
+| 项 | 值 |
+| --- | --- |
+| 必需状态检查 | `test`（strict：合并前必须先对齐最新 main） |
+| enforce_admins | 开（管理员也拦） |
+| 必需讨论 resolved | 开 |
+| 必需批准 | 未开（单人仓库会死锁，理由见上） |
+| force push / 删除分支 | 禁止 |
+
+### 踩到的坑：必需检查的名字
+
+填 `CI / test`（工作流名 / job 名）会让 PR **永远 BLOCKED**——GitHub 在等一个永远不会上报的检查名。
+正确做法是**只填 job 名**：本仓库是 `test`。
+
+判定方法（比看 UI 可靠）：检查全绿时读 `mergeStateStatus`。
+
+```
+gh pr view <PR号> -R yuhuan-zhen/review-lab --json mergeStateStatus -q .mergeStateStatus
+# CLEAN            -> 配置正确
+# BLOCKED + 全绿   -> 检查名填错，或还有未 resolved 的讨论
+```
